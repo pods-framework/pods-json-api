@@ -1,7 +1,7 @@
 === BuddyPress json API ===
 Contributors: modemlooper
 Tags: buddypress, json, api
-Tested up to: 3.4
+Tested up to: 3.9.1
 BuddyPress: 2.0
 Stable tag: 0.1
 Version: 0.1
