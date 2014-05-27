@@ -26,6 +26,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+// API embedded in core (at some point)
+if ( defined( 'PODS_JSON_API_VERSION' ) ) {
+	return;
+}
+
 define( 'PODS_JSON_API_VERSION', '0.1' );
 define( 'PODS_JSON_API_DIR', plugin_dir_path( __FILE__ ) );
 
