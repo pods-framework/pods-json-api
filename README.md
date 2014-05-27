@@ -3,7 +3,7 @@ Pods JSON API
 
 This is a plugin that implements the `pods` and `pods-api` routes for [WP-API](https://github.com/WP-API/WP-API).
 
-It provides access to add/save/duplicate/delete in the Pods class and add_pod/save_pod/duplicate_pod/reset_pod/delete_pod in the PodsAPI class in the [Pods Framework](http://pods.io).
+It provides access to various methods in the Pods and Pods API classes in the [Pods Framework](http://pods.io).
 
 ### Requirements
 
