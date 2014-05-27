@@ -73,12 +73,12 @@ class BP_API_Activity {
 				bp_the_activity();
 										
 				$activity = array( 
-					'avatar' 			=> bp_core_fetch_avatar( array( 'html' => false, 'item_id' => bp_get_activity_id() ) ),
-					'action' 			=> bp_get_activity_action(),
-					'content' 			=> bp_get_activity_content_body(),
+					'avatar' 		=> bp_core_fetch_avatar( array( 'html' => false, 'item_id' => bp_get_activity_id() ) ),
+					'action' 		=> bp_get_activity_action(),
+					'content' 		=> bp_get_activity_content_body(),
 					'activity_id'		=> bp_get_activity_id(),
 					'activity_username'	=> bp_core_get_username( bp_get_activity_user_id() ),
-					'user_id'			=> bp_get_activity_user_id(),
+					'user_id'		=> bp_get_activity_user_id(),
 					'comment_count' 	=> bp_activity_get_comment_count(),
 					'can_comment' 		=> bp_activity_can_comment(),
 					'can_favorite' 		=> bp_activity_can_favorite(),
