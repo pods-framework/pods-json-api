@@ -32,6 +32,14 @@ add_action( 'wp_json_server_before_serve', 'bp_api_core_init' );
  */
 class BP_API_Core{
 
+
+    /**
+     * register_routes function.
+     * 
+     * @access public
+     * @param mixed $routes
+     * @return void
+     */
     public function register_routes( $routes ) {
         $routes['/buddypress'] = array(
             array( array( $this, 'get_core'), WP_JSON_Server::READABLE ),
@@ -41,7 +49,6 @@ class BP_API_Core{
     }
     
     
-	
     /**
      * get_core function.
      * 
@@ -55,6 +62,7 @@ class BP_API_Core{
     	
     	$response['version'] = $bp->version;
     	$response['active_components'] = $bp->active_components;
+    	$response['directory_page_ids'] = bp_core_get_directory_page_ids();
     	
 	    return wp_send_json( $response );
     }
