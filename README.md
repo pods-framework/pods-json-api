@@ -10,7 +10,6 @@ It provides access to add/save/duplicate/delete in the Pods class and add_pod/sa
 * [WP-API](https://github.com/WP-API/WP-API) 1.0 or newer
 * [PHP](http://php.net/) 5.3 or newer
 * [WordPress](http://wordpress.org/) 3.9 or newer
-* 
 
 ### Endpoints
 
