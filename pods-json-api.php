@@ -6,7 +6,7 @@ Description: JSON REST API for Pods
 Version: 0.1
 Author: Pods Framework Team
 Author URI: http://pods.io/about/
-Text Domain: pods
+Text Domain: pods-json-api
 Domain Path: /languages/
 
 Copyright 2009-2014  Pods Foundation, Inc  (email : contact@podsfoundation.org)
