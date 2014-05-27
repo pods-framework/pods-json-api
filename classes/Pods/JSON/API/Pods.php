@@ -45,7 +45,7 @@ class Pods_JSON_API_Pods {
 	 *
 	 * @access public
 	 */
-	public function get_items( $pod, $data ) {
+	public function get_items( $pod, $data = array() ) {
 
 		if ( !$this->check_access( __FUNCTION__, $pod ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
@@ -74,9 +74,14 @@ class Pods_JSON_API_Pods {
 			}
 
 			$pod_object = pods( $pod );
+
+			$params = apply_filters( 'pods_json_api_pods_get_items_params', $params, $pod, $data, $pod_object );
+
 			$pod_object->find( $params );
 
 			$items = $pod_object->export_data();
+
+			$items = apply_filters( 'pods_json_api_pods_get_items', $items, $pod, $params, $data, $pod_object );
 		}
 		catch ( Exception $e ) {
 			$items = new WP_Error( $e->getCode(), $e->getMessage() );
@@ -113,7 +118,7 @@ class Pods_JSON_API_Pods {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
@@ -146,7 +151,11 @@ class Pods_JSON_API_Pods {
 		}
 
 		try {
-			$data = pods( $pod, $item )->export();
+			$pod_object = pods( $pod, $item );
+
+			$data = $pod_object->export();
+
+			$data = apply_filters( 'pods_json_api_pods_' . __FUNCTION__, $data, $pod, $item, $data, $pod_object );
 		}
 		catch ( Exception $e ) {
 			$data = new WP_Error( $e->getCode(), $e->getMessage() );
@@ -179,7 +188,7 @@ class Pods_JSON_API_Pods {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
@@ -253,7 +262,7 @@ class Pods_JSON_API_Pods {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
