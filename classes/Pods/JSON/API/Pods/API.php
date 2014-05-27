@@ -98,7 +98,7 @@ class Pods_JSON_API_Pods_API {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
@@ -194,7 +194,7 @@ class Pods_JSON_API_Pods_API {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
@@ -268,7 +268,7 @@ class Pods_JSON_API_Pods_API {
 	 *
 	 * @access public
 	 */
-	public function duplicate_pod( $pod, $data ) {
+	public function duplicate_pod( $pod, $data = array() ) {
 
 		if ( !$this->check_access( __FUNCTION__ ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
@@ -291,7 +291,7 @@ class Pods_JSON_API_Pods_API {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $id instanceof WP_Error ) {
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
 			return $id;
 		}
 		elseif ( 0 < $id ) {
