@@ -105,6 +105,7 @@ class Pods_JSON_API_Init {
 		}
 
 		return false;
+		
 	}
 
 }
