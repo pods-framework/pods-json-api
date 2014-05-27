@@ -66,7 +66,7 @@ class BP_API_Activity {
 		
 		$activities = array();
 				
-		if ( bp_has_activities( $arg ) ) {
+		if ( bp_has_activities( $arg = '' ) ) {
 		
 			while ( bp_activities() ) {
 				
