@@ -6,7 +6,6 @@ Stable tag: 0.1
 Version: 0.1
 License: GPLv2
 
-
 == Description ==
 JSON REST API for Pods. This plugin creates JSON API endpoints for https://github.com/WP-API/WP-API
 
@@ -26,5 +25,5 @@ OR you can just install it with WordPress by going to Plugins >> Add New >> and 
 
 
 == Changelog ==
-= 0.1 - June 1, 2014 =
+= 0.1 - May 27th, 2014 =
 * Initial release
