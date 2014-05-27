@@ -146,33 +146,13 @@ class Pods_JSON_API_Pods {
 		}
 
 		try {
-			$api = pods_api();
-			$api->display_errors = false;
-
-			$params = array();
-
-			if ( is_int( $pod ) ) {
-				$params[ 'id' ] = $pod;
-			}
-			else {
-				$params[ 'name' ] = $pod;
-			}
-
-			$pod = $api->load_pod( $params );
+			$data = pods( $pod, $item )->export();
 		}
 		catch ( Exception $e ) {
-			$pod = new WP_Error( $e->getCode(), $e->getMessage() );
+			$data = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		if ( $pod instanceof WP_Error ) {
-			return $pod;
-		}
-		elseif ( $pod ) {
-			return get_object_vars( $this->cleanup_pod( $pod ) );
-		}
-		else {
-			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error getting pod item', 'pods-json-api' ) );
-		}
+		return $data;
 
 	}
 
