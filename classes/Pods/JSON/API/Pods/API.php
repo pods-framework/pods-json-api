@@ -308,12 +308,9 @@ class Pods_JSON_API_Pods_API {
 	}
 
 	/**
-	 * Reset a Pod
+	 * Reset a Pod's contents
 	 *
 	 * @param string|int $pod Pod name or ID (if typed as integer)
-	 * @param array $data Pod data. Can contain:
-	 *  - new_name
-	 *  - <field>=<value>
 	 *
 	 * @return boolean|WP_Error
 	 *
