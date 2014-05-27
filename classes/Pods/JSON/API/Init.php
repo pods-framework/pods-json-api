@@ -33,6 +33,12 @@ class Pods_JSON_API_Init {
 	 */
 	public static function include_endpoints() {
 
+		if ( !self::is_pods_installed() ) {
+			add_action( 'all_admin_notices', 'pods_json_api_pods_required' );
+
+			return;
+		}
+
 		foreach ( self::$endpoints as $class ) {
 			include_once PODS_JSON_API_DIR . 'classes/' . str_replace( '_', '/', $class ) . '.php';
 		}
@@ -46,6 +52,10 @@ class Pods_JSON_API_Init {
 	 * @static
 	 */
 	public static function add_endpoints() {
+
+		if ( !self::is_pods_installed() ) {
+			return;
+		}
 
 		foreach ( self::$endpoints as $class ) {
 			self::$endpoint_objects[ $class ] = new $class;
@@ -77,6 +87,24 @@ class Pods_JSON_API_Init {
 
 
 
+	}
+
+	/**
+	 * Check if Pods is installed
+	 *
+	 * @return bool
+	 *
+	 * @access public
+	 * @static
+	 */
+	public static function is_pods_installed() {
+
+		// Check if Pods is active
+		if ( defined( 'PODS_VERSION' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 }

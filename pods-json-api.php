@@ -34,29 +34,6 @@ if ( defined( 'PODS_JSON_API_VERSION' ) ) {
 define( 'PODS_JSON_API_VERSION', '0.1' );
 define( 'PODS_JSON_API_DIR', plugin_dir_path( __FILE__ ) );
 
-// Check if Pods is active
-if ( !defined( 'PODS_VERSION' ) ) {
-	add_action( 'all_admin_notices', 'pods_json_api_pods_required' );
-
-	/**
-	 * pods_json_api_pods_required function.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	function pods_json_api_pods_required() {
-
-		echo sprintf( '<div id="message" class="error"><p>%s</p></div>',
-			sprintf(
-				__( '%1$s requires the Pods plugin to be installed/activated.', 'pods-json-api' ),
-				'Pods JSON API' )
-		);
-
-	}
-
-	return;
-}
-
 // Include main class
 include_once PODS_JSON_API_DIR . 'classes/Pods/JSON/API/Init.php';
 
@@ -69,3 +46,19 @@ add_action( 'wp_json_server_before_serve', array( 'Pods_JSON_API_Init', 'add_end
 // Register activation/deactivation hooks
 register_activation_hook( __FILE__, array( 'Pods_JSON_API_Init', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Pods_JSON_API_Init', 'deactivate' ) );
+
+/**
+ * pods_json_api_pods_required function.
+ *
+ * @access public
+ * @return void
+ */
+function pods_json_api_pods_required() {
+
+	echo sprintf( '<div id="message" class="error"><p>%s</p></div>',
+		sprintf(
+			__( '%1$s requires the Pods plugin to be installed/activated.', 'pods-json-api' ),
+			'Pods JSON API' )
+	);
+
+}
