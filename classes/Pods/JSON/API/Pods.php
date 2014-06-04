@@ -81,6 +81,17 @@ class Pods_JSON_API_Pods {
 
 			$items = $pod_object->export_data();
 
+			$ids = array_keys($items);
+			$flat_items = [];
+
+			for ($i = 0; $i < count($ids); $i++) {
+				$real_id = $ids[$i];
+				$items[$real_id]["ID"] = $real_id;
+				$flat_items[$i] = $items[$real_id];
+			}
+
+			$items = $flat_items;
+
 			$items = apply_filters( 'pods_json_api_pods_get_items', $items, $pod, $params, $data, $pod_object );
 		}
 		catch ( Exception $e ) {
@@ -155,6 +166,8 @@ class Pods_JSON_API_Pods {
 
 			$data = $pod_object->export();
 
+			$data["ID"] = $item; // TODO: what if $item is slug, not ID?
+
 			$data = apply_filters( 'pods_json_api_pods_' . __FUNCTION__, $data, $pod, $item, $data, $pod_object );
 		}
 		catch ( Exception $e ) {
@@ -182,6 +195,7 @@ class Pods_JSON_API_Pods {
 		}
 
 		try {
+			//unset($data["ID"]); // because that's not part of how Pods works
 			$id = pods( $pod, $item )->save( $data );
 		}
 		catch ( Exception $e ) {
