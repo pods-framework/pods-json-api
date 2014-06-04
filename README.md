@@ -10,6 +10,14 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 * [WP-API](https://github.com/WP-API/WP-API) 1.0 or newer
 * [PHP](http://php.net/) 5.3 or newer
 * [WordPress](http://wordpress.org/) 3.9 or newer
+* [Pods Framework](http://Pods.io)
+
+### Resources
+* [WP-API Getting Started Guide](https://github.com/WP-API/WP-API/blob/master/docs/guides/getting-started.md)
+* [WP-API Docs](https://github.com/WP-API/WP-API/blob/master/docs/)
+* [WP-API Console](https://github.com/WP-API/api-console)
+* [oAuth Authentication](https://github.com/WP-API/OAuth1) Recomended For Production
+* [Basic Authentication](https://github.com/WP-API/Basic-Auth) Recomended For Testing & Debugging
 
 ### Endpoints
 
