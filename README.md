@@ -98,5 +98,5 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  $pods = pods( 'soup', $params );
  ```
 
- You would use the url encoded equivalent of `soup/find?="t.is_spicy=1"&limit="7"`. By passing the values through `urlencode()` we get `soup/find?is_spicy=%3D1&limit=limit%3D%227%22`
+ You would use the url encoded equivalent of `soup/find?where="t.is_spicy=1"&limit="7"`. By passing the values through `urlencode()` we get `soup/find?where=t.is_spicy%3D1&limit%3D7`
 
