@@ -91,12 +91,34 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  For example, to do a `Pods::find()` query on the Pod 'soup' that was the equivalent of:
 
  ```php
- $params = array(
-    'where' => 't.is_spicy = 1',
-    'limit' => '7',
- );
+     $params = array(
+        'where' => 't.is_spicy = 1',
+        'limit' => '7',
+     );
  $pods = pods( 'soup', $params );
  ```
 
- You would use the url encoded equivalent of `soup/find?where="t.is_spicy=1"&limit="7"`. By passing the values through `urlencode()` we get `soup/find?where=t.is_spicy%3D1&limit%3D7`
+ You would use the url encoded equivalent of `soup/find?where="t.is_spicy=1"&limit="7"`. By passing the values through `urlencode()` we get `soup/find?where=t.is_spicy%3D1&limit=7`
 
+You can convert a PHP array, designed to be passed to `Pods::find()` or another method, to an encoded string, by first passing it through a foreach loop and encoding the values. For example, to create a long query, without manually encoding URLs, you could do:
+
+```php
+    $params = array(
+        'where' => 'serves.meta_value = "four or more"',
+        'limit' => '7',
+        'orderby' => 't.post_title ASC'
+    );
+
+    $url = site_url('/wp-json/soup/pods/find?');
+    $count = count( $params );
+
+    $i = 1;
+    foreach( $params as $key => $value ) {
+        $url .= $key.'='.urlencode( $value );
+        if ( $i < $count ) {
+            $url .= '&';
+        }
+        $i++;
+    }
+```
+The variable, `$url` now has the url to query the 'soup' Pod, using `Pods::find()` by the parameters set in the array.
