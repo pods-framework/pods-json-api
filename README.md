@@ -84,3 +84,19 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  * Success sends you to `get_pod` URL
 * `reset_pod` (DELETABLE)
  * Reset a Pod's contents
+
+ ### Passing Parameters To Methods
+ You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
+
+ For example, to do a `Pods::find()` query on the Pod 'soup' that was the equivalent of:
+
+ ```php
+ $params = array(
+    'where' => 't.is_spicy = 1',
+    'limit' => '7',
+ );
+ $pods = pods( 'soup', $params );
+ ```
+
+ You would use the url encoded equivalent of `soup/find?="t.is_spicy=1"&limit="7"`. By passing the values through `urlencode()` we get `soup/find?is_spicy=%3D1&limit=limit%3D%227%22`
+
