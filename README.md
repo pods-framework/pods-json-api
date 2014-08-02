@@ -109,8 +109,25 @@ You can convert a PHP array, designed to be passed to `Pods::find()` or another 
         'orderby' => 't.post_title ASC'
     );
 
-    $url = site_url( '/wp-json/soup/pods/find?' );
+    $url = site_url( '/wp-json/pods/soup?find=' );
     
     $url .= http_build_query( $params );
 ```
 The variable, `$url` now has the url to query the 'soup' Pod, using `Pods::find()` by the parameters set in the array.
+
+In the above example, the method find is used to illustrate the point that all methods of the Pods and Pods_API class that are accessible via this plugin can be specified this way. It is not actually needed as find is the default method for GET requests, while add is the default method for PUT requests.
+
+All that is actually needed to create a find request is:
+
+```php
+    $params = array(
+        'where' => 'serves.meta_value = "four or more"',
+        'limit' => '7',
+        'orderby' => 't.post_title ASC'
+    );
+
+    $url = site_url( '/wp-json/pods/soup' );
+
+    $url .= add_query_arg( $params, $url );
+```
+
