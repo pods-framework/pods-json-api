@@ -111,7 +111,7 @@ You can convert a PHP array, designed to be passed to `Pods::find()` or another 
 
     $url = site_url( '/wp-json/pods/soup?find=' );
     
-    $url .= http_build_query( $params );
+    $url = http_build_query( $params );
 ```
 The variable, `$url` now has the url to query the 'soup' Pod, using `Pods::find()` by the parameters set in the array.
 
@@ -128,6 +128,6 @@ All that is actually needed to create a find request is:
 
     $url = site_url( '/wp-json/pods/soup' );
 
-    $url .= add_query_arg( $params, $url );
+    $url = add_query_arg( $params, $url );
 ```
 
