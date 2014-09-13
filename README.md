@@ -109,7 +109,7 @@ You can convert a PHP array, designed to be passed to `Pods::find()` or another 
         'orderby' => 't.post_title ASC'
     );
 
-    $url = site_url( '/wp-json/pods/soup?find=' );
+    $url = json_url( 'pods/soup?find=' );
     
     $url = http_build_query( $params );
 ```
@@ -126,7 +126,7 @@ All that is actually needed to create a find request is:
         'orderby' => 't.post_title ASC'
     );
 
-    $url = site_url( '/wp-json/pods/soup' );
+    $url = json_url( 'pods/soup' );
 
     $url = add_query_arg( $params, $url );
 ```
