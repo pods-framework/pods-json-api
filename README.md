@@ -88,6 +88,8 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
 
+##### Querying For Pods Items With GET Requests
+
 For example, to do a `Pods::find()` query on the Pod 'soup' that was the equivalent of:
 
 ```php
@@ -131,3 +133,29 @@ All that is actually needed to create a find request is:
     $url = add_query_arg( $params, $url );
 ```
 
+##### Updating Items With Post Requests
+By default POST requests, sent to a Pods class endpoint will default to save_item. This allows for creating new items or updating existing items. In this example, a custom field--"home planet"--in anexisting item--Pod name "jedi", post ID 9--is being updated:
+
+```php
+    $data = array( 'home_planet' => 'Alderann' );
+    $url = json_url( 'pods/jedi/9' );
+    
+    //This example uses the basic authentication plugin for authentication
+    $headers    = array (
+        'Authorization' => 'Basic ' . base64_encode( 'username' . ':' . 'password' ),
+    );
+ 
+    $response = wp_remote_post( $url, array (
+                        'method' => 'POST',
+						'headers'     => $headers,
+                        'body' => json_encode( $data )
+        )
+    );
+    
+    //make sure response isn't an eror
+    if ( ! is_wp_error( $response )  ) {
+    
+        //show the updated post item
+        var_dump( wp_remote_retrieve_body( $response ) );
+    }
+```
