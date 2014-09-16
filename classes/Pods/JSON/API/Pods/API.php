@@ -464,12 +464,13 @@ class Pods_JSON_API_Pods_API {
 		}
 
 		if ( $fields ) {
-			$field_types = Pods_Form::field_types();
+			$pods_form = pods_form();
+			$field_types = $pods_form::field_types();
 
 			$field_type_options = array();
 
 			foreach ( $field_types as $type => $field_type_data ) {
-				$field_type_options[ $type ] = Pods_Form::ui_options( $type );
+				$field_type_options[ $type ] = $pods_form::ui_options( $type );
 			}
 
 			foreach ( $pod[ 'fields' ] as &$field ) {
