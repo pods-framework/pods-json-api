@@ -379,7 +379,7 @@ class Pods_JSON_API_Pods_API {
 	 * @param array $pod Pod array
 	 * @param boolean $fields Include fields in pod
 	 *
-	 * @return array
+	 * @return object
 	 *
 	 * @access protected
 	 */
@@ -523,7 +523,7 @@ class Pods_JSON_API_Pods_API {
 			unset( $pod[ 'fields' ] );
 		}
 
-		return $pod;
+		return (object) $pod;
 
 	}
 
