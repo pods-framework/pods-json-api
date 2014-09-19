@@ -23,7 +23,7 @@ class Pods_JSON_API_Pods_API {
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)' ] = array(
 			array( array( $this, 'get_pod' ), WP_JSON_Server::READABLE ),
-			array( array( $this, 'save_pod' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON ),
+			array( array( $this, 'update_rel' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON ),
 			array( array( $this, 'delete_pod' ), WP_JSON_Server::DELETABLE ),
 
 		);
@@ -37,7 +37,7 @@ class Pods_JSON_API_Pods_API {
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)/update_rel' ] = array(
-			array( array( $this, 'update_rel' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON )
+			array( array( $this, 'update_rel' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
 
 
@@ -361,57 +361,67 @@ class Pods_JSON_API_Pods_API {
 
 	}
 
-	function update_rel( $pod, $data ) {
+	function update_rel( $pod, $data = array() ) {
 		if ( ! $this->check_access( __FUNCTION__ ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
 		}
 		try {
+			$id = $other_pods = $fields_updated = false;
 			$api = pods_api();
 			$api->display_errors = false;
 
-			$params = array();
+			$params = array ();
 
 			if ( is_int( $pod ) ) {
 				$params[ 'id' ] = $pod;
-			}
-			else {
+			} else {
 				$params[ 'name' ] = $pod;
 			}
-			
 
-			$fields = $api->load_fields( $params );
-			$relationships = pods_v( 'relationships', $data );
-			$other_pods = array();
-			if (  $relationships &&  $fields  ) {
-				foreach( $relationships as $relationship ) {
-					$from = pods_v( 'from', $relationship );
-					if ( $from && $pod === pods_v( 'pod_name', $from ) ) {
-						$to = pods_v( 'to', $relationship );
-						if ( $to ) {
-							$to_pod   = pods_v( 'pod_name', $to );
-							$to_field = pods_v( 'field_name', $to );
-							if ( $to_pod && $to_field ) {
-								if ( ! is_null( $related_pod = pods_v( $to_pod, $other_pods ) ) ) {
-									$params = array( 'name' => $to_pod );
-									$related_pod = $other_pods[ $to_pod ] =  $api->load_fields( $params );
-								}
+			$this_pod = $api->load_pod( $params );
+			$pod_id = $id = pods_v( 'id', $this_pod );
+			$fields = pods_v( 'fields', $this_pod );
+			unset( $this_pod );
+			$pod_names = $api->load_pods( array( 'names' => true ) );
 
-								$sister_id = false;
-								if ( ! is_null( $related_field = pods_v( $to_field, $related_pod ) ) ) {
-									$sister_id = pods_v( 'id', $related_pod );
-								}
+			if ( ! empty( $pod_names ) ) {
+				$pod_names = array_flip( (array) $pod_names );
+			}
 
-								if ( $sister_id ) {
-									$params = array(
-										'pod' => $pod,
-										'name' => $to_field,
-										'sister_id' => $sister_id,
-									);
+			$other_pods = $fields_updated = array ();
 
-									$fields_updated[] = $api->save_field( $params );
-								}
+			foreach( $fields as $field ) {
+				if ( 'pick' == pods_v( 'type', $field ) ) {
+					$field_id = pods_v( 'id', $field );
+					$field_name = pods_v( 'name', $field );
+					$to_pod = pods_v( 'pick_val', $field );
 
+					if ( in_array( $to_pod, $pod_names ) ) {
+						$relationship = pods_v( pods_v( 'name', $field ), $data );
+						$to_pod = $relationship[ 'to' ][ 'pod_name' ];
+						$to_field = $relationship[ 'to' ][ 'field_name' ];
+
+						if ( is_null( $related_pod = pods_v( $to_pod, $other_pods ) ) ) {
+							$params = array( 'name' => $to_pod );
+							$related_pod =  $api->load_pod( $params );
+							$related_pod = pods_v( 'fields', $related_pod );
+							if ( is_object( $related_pod ) && ! empty ( $related_pod ) ) {
+								$other_pods[ $to_pod ] = $related_pod;
 							}
+
+							$field = pods_v( $to_field, $related_pod );
+							$sister_id = pods_v( 'id', $field  );
+
+							if ( ! is_null( $pod_id ) && ! is_null( $field_id ) && ! is_null( $sister_id ) && ! is_null( $field_name ) ) {
+								$params = array (
+									'pod_id'    => $pod_id,
+									'id'        => $field_id,
+									'sister_id' => $sister_id,
+									'name'      => $field_name,
+								);
+							}
+
+							$fields_updated[] = $api->save_field( $params );
 
 						}
 
@@ -422,8 +432,6 @@ class Pods_JSON_API_Pods_API {
 			}
 
 		}
-
-
 		catch ( Exception $e ) {
 			$id = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
@@ -432,6 +440,7 @@ class Pods_JSON_API_Pods_API {
 			return $id;
 		}
 		elseif( isset( $fields_updated ) && is_array( $fields_updated ) ) {
+			return $fields_updated;
 			$response = json_ensure_response( $fields_updated );
 			$response->set_status( 201 );
 			$response->header( 'Location', json_url( '/pods-api/' . $pod[ 'name' ] . '/' . __FUNCTION__ ) );
@@ -441,7 +450,7 @@ class Pods_JSON_API_Pods_API {
 		elseif ( 0 < $id ) {
 			$response = json_ensure_response( $pod = $this->get_pod( $id ) );
 			$response->set_status( 201 );
-			$response->header( 'Location', json_url( '/pods-api/' . $pod[ 'name' ] ) );
+			$response->header( 'Location', json_url( '/pods-api/' . $pod[ 'name' ] . '/' . __FUNCTION__ ) );
 
 			return $response;
 		}
