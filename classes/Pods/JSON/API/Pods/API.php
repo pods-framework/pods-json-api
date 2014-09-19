@@ -18,6 +18,7 @@ class Pods_JSON_API_Pods_API {
 		$routes[ '/pods-api' ] = array(
 			array( array( $this, 'get_pods' ), WP_JSON_Server::READABLE ),
 			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
+			array( array( $this, 'package_import' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 
 		);
 
@@ -456,6 +457,41 @@ class Pods_JSON_API_Pods_API {
 		}
 		else {
 			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error updating relationship', 'pods-json-api' ) );
+		}
+
+	}
+
+	public function package( $data ) {
+
+		if ( ! $this->check_access( __FUNCTION__ ) ) {
+			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
+		}
+
+		if ( ! class_exists(  'Pods_Migrate_Packages' ) ) {
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__ . 'no_package',  __( 'This endpoint requires activating the Pods Packages component on the site receiving the package.', 'pods-json-api' ) );
+		}
+
+		try {
+
+			$id = Pods_Migrate_Packages::import( $data );
+
+		}
+		catch ( Exception $e ) {
+			$id = new WP_Error( $e->getCode(), $e->getMessage() );
+		}
+
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
+			return $id;
+		}
+		elseif ( 0 < $id ) {
+			$response = json_ensure_response( $id );
+			$response->set_status( 201 );
+			$response->header( 'Location', json_url( '/pods-api/package' ) );
+
+			return $response;
+		}
+		else {
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error adding pod', 'pods-json-api' ) );
 		}
 
 	}
