@@ -18,8 +18,10 @@ class Pods_JSON_API_Pods_API {
 		$routes[ '/pods-api' ] = array(
 			array( array( $this, 'get_pods' ), WP_JSON_Server::READABLE ),
 			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
-			array( array( $this, 'package_import' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
-
+			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
+		);
+		$routes[ '/pods-api/package' ] = array(
+			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)' ] = array(
