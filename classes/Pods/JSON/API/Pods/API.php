@@ -18,7 +18,6 @@ class Pods_JSON_API_Pods_API {
 		$routes[ '/pods-api' ] = array(
 			array( array( $this, 'get_pods' ), WP_JSON_Server::READABLE ),
 			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
-			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)' ] = array(
@@ -40,9 +39,7 @@ class Pods_JSON_API_Pods_API {
 			array( array( $this, 'update_rel' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
 
-		$routes[ '/pods-api/package' ] = array(
-			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
-		);
+
 
 		return $routes;
 
@@ -487,7 +484,7 @@ class Pods_JSON_API_Pods_API {
 	 * @access public
 	 */
 	public function package( $data ) {
-
+		return new WP_Error( 'pods_json_api_error_' . __FUNCTION__ . 'no_package',  __( 'This endpoint requires activating the Pods Packages component on the site receiving the package.', 'pods-json-api' ) );
 		if ( ! $this->check_access( __FUNCTION__ ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
 		}
