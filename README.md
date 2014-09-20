@@ -85,6 +85,24 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 * `reset_pod` (DELETABLE)
  * Reset a Pod's contents
 
+ `/pods-api/<pod>/update_rel`
+
+ * `update_rel` (EDITABLE | ACCEPT_JSON)
+  * Update bi-directional relationships to correct sister IDs.
+  * Uses JSON object as an array of data to set relationships. Must be in form documented below.
+  * Success sends you to a list of field IDs that were updated.
+
+  `/pods-api/package`
+
+  * `package` (CREATABLE | ACCEPT_JSON)
+   * Import a Pods Package
+   * Takes a Pods Package data as the body of request.
+   * Requires that the Pods Migrate Package component be active on remote site.
+   * Success returns true. Failure false.
+   * Reset a Pod's contents
+
+
+
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
 
@@ -159,3 +177,29 @@ By default POST requests, sent to a Pods class endpoint will default to save_ite
         var_dump( wp_remote_retrieve_body( $response ) );
     }
 ```
+
+### Using The `update_rel` Endpoint
+*Endpoint added in version 0.2
+
+This endpoint is designed to address an issue that can occur when using the `add_pod` or `save_pod` methods with bi-directional relationship fields.
+
+When these types of fields are updated/ created via the API, at the time of field creation/edit the sister IDs--the ID of the field in related Pod--can not be set if the related field does not yet exist and therefore does not have an ID. In addition, if the configuration is being copied from a remote site, the field IDs will be diffrent.
+
+This endpoint is designed to be used to correct these errors <em>after</em> all Pods and Pods Fields are created. The data passed to it should be a multi-demenisonal array, with each field represented like this:
+
+    ```
+    [field_name] =>
+        [from] =>
+            [field_name] => 'field_name',
+            [pod_name] => 'pod_name',
+        [to] =>
+             [field_name] => 'field_name',
+             [pod_name] => 'pod_name',
+    ```
+
+### Using the `package` Endpoint
+*Endpoint added in version 0.2
+
+This endpoint allows for running a Pods Package import via the API. It can be used to import Pods, Pods Templates, Pods Pages and Pods Helpers. It requires that the Pods Migrate Package component be active on the remote site.
+
+You can pass the Pods Package data--which is already in JSON format--to the body of the request.

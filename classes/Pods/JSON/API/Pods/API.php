@@ -20,9 +20,6 @@ class Pods_JSON_API_Pods_API {
 			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
 			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
-		$routes[ '/pods-api/package' ] = array(
-			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
-		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)' ] = array(
 			array( array( $this, 'get_pod' ), WP_JSON_Server::READABLE ),
@@ -43,7 +40,9 @@ class Pods_JSON_API_Pods_API {
 			array( array( $this, 'update_rel' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
 
-
+		$routes[ '/pods-api/package' ] = array(
+			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
+		);
 
 		return $routes;
 
@@ -364,6 +363,19 @@ class Pods_JSON_API_Pods_API {
 
 	}
 
+	/**
+	 * Update bi-directional relationships to correct sister IDs.
+	 *
+	 * @see Readme for strucutre of data.
+	 *
+	 * @param int|string $pod Pod name or Pod ID.
+	 * @param array $data Array of relationships for site
+	 *
+	 *
+	 * @access public
+	 *
+	 * @return WP_Error|WP_JSON_ResponseInterface
+	 */
 	function update_rel( $pod, $data = array() ) {
 		if ( ! $this->check_access( __FUNCTION__ ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
@@ -463,6 +475,17 @@ class Pods_JSON_API_Pods_API {
 
 	}
 
+	/**
+	 * Import a Pods Migrate package
+	 *
+	 * Pods Package component must be active on site receiving data or an error will be returned.
+	 *
+	 * @param array $data Pods Migrate Package.
+	 *
+	 * @return boolean|WP_Error
+	 *
+	 * @access public
+	 */
 	public function package( $data ) {
 
 		if ( ! $this->check_access( __FUNCTION__ ) ) {
@@ -493,7 +516,7 @@ class Pods_JSON_API_Pods_API {
 			return $response;
 		}
 		else {
-			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error adding pod', 'pods-json-api' ) );
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error importing package.', 'pods-json-api' ) );
 		}
 
 	}
