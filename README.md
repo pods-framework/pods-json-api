@@ -17,7 +17,7 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 * [WP-API Docs](https://github.com/WP-API/WP-API/blob/master/docs/)
 * [WP-API Console](https://github.com/WP-API/api-console)
 * [oAuth Authentication](https://github.com/WP-API/OAuth1) Recomended For Production
-* [Basic Authentication](https://github.com/WP-API/Basic-Auth) Recomended For Testing & Debugging
+* [Basic Authentication](https://github.com/WP-API/Basic-Auth) Recommended For Testing & Debugging
 
 ### Endpoints
 
@@ -93,15 +93,31 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  * Success returns to a list of field IDs that were updated.
 
 #### Pods Components
-  `/pods-components?package`
+`/pods-components?package`
+ * `package` (CREATABLE | ACCEPT_JSON)
+  * Import a Pods Package
+  * Requires that the Pods Migrate Package component be active on remote site.
+  * Success returns true. Failure false.
 
-* `package` (CREATABLE | ACCEPT_JSON)
- * Import a Pods Package
- * Requires that the Pods Migrate Package component be active on remote site.
+
+`/pods-components?activate_components`
+* `activate_components` (EDITABLE | ACCEPT_JSON)
+ * Bulk activates and/ or deactivates components.
+ * Takes a multi-dimensional array containing a 'activate' and or 'deactivate' key, each of which should contain an array of Pods Component names.
+ * Use PUT request.
  * Success returns true. Failure false.
 
+`/pods-components/activate/<component>`
+*`activate`  (EDITABLE)
+ * Activate a single component
+ * Use POST request.
+ * Success returns true. Failure false.
 
-
+`/pods-components/activate/<component>`
+ *`deactivate`  (DELETABLE)
+  * Deactivate a single component
+  * Use DELETE request.
+  * Success returns true. Failure false.
 
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
@@ -179,7 +195,7 @@ By default POST requests, sent to a Pods class endpoint will default to save_ite
 ```
 
 ### Using The `update_rel` Endpoint
-*Endpoint added in version 0.2
+*Added in version 0.2
 
 This endpoint is designed to address an issue that can occur when using the `add_pod` or `save_pod` methods with bi-directional relationship fields.
 
@@ -197,9 +213,68 @@ This endpoint is designed to be used to correct these errors <em>after</em> all 
              [pod_name] => 'pod_name',
     ```
 
-### Using the `package` Endpoint
-*Endpoint added in version 0.2
+### Importing a Pods Migrate Package
+*Added in version 0.2
 
-This endpoint allows for running a Pods Package import via the API. It can be used to import Pods, Pods Templates, Pods Pages and Pods Helpers. It requires that the Pods Migrate Package component be active on the remote site.
+The pods-components endpoint allows for running a Pods Package import via the API. It can be used to import Pods, Pods Templates, Pods Pages and Pods Helpers. It requires that the Pods Migrate Package component be active on the remote site.
 
-You can pass the Pods Package data--which is already in JSON format--to the body of the request.
+You can pass the Pods Package data--which is already in JSON format--to the body of a POST request.
+
+
+### Activating & Deactivating Components
+*Added in version 0.2
+You may bulk activate and/ or deactivate components with a PUT request to the pods-packages endpoint. Your
+
+Activate and/ or deactivate multiple components at once:
+```
+    $data = array(  'deactivate' => array( 'templates', 'table-storage' ), 'activate' => array( 'pages' ) );
+
+
+	$url = json_url( 'pods-components?activate_components' );
+
+    //This example uses the basic authentication plugin for authentication
+    $headers    = array (
+        'Authorization' => 'Basic ' . base64_encode( 'admin' . ':' . 'password' ),
+    );
+
+
+    $response = wp_remote_post( $url, array (
+                        'method'    => 'PUT',
+                        'headers'   => $headers,
+						'body'      => json_encode( $data )
+        )
+    );
+```
+Activate one component:
+
+```
+    $url = json_url( 'pods-components/activate/table-storage' );
+
+    //This example uses the basic authentication plugin for authentication
+    $headers    = array (
+        'Authorization' => 'Basic ' . base64_encode( 'admin' . ':' . 'password' ),
+    );
+
+    $response = wp_remote_post( $url, array (
+                        'method'    => 'POST',
+                        'headers'   => $headers,
+        )
+    );
+```
+
+Deactivate one component:
+
+```
+    $url = json_url( 'pods-components/activate/templates' );
+
+    //This example uses the basic authentication plugin for authentication
+    $headers    = array (
+        'Authorization' => 'Basic ' . base64_encode( 'admin' . ':' . 'password' ),
+    );
+
+    $response = wp_remote_post( $url, array (
+                        'method'    => 'DELETE',
+                        'headers'   => $headers,
+        )
+    );
+```
