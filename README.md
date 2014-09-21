@@ -85,21 +85,21 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 * `reset_pod` (DELETABLE)
  * Reset a Pod's contents
 
- `/pods-api/<pod>/update_rel`
+`/pods-api/<pod>/update_rel`
 
- * `update_rel` (EDITABLE | ACCEPT_JSON)
-  * Update bi-directional relationships to correct sister IDs.
-  * Uses JSON object as an array of data to set relationships. Must be in form documented below.
-  * Success sends you to a list of field IDs that were updated.
+* `update_rel` (EDITABLE | ACCEPT_JSON)
+ * Update bi-directional relationships to correct sister IDs.
+ * Uses JSON object as an array of data to set relationships. Must be in form documented below.
+ * Success returns to a list of field IDs that were updated.
 
-  `/pods-api/package`
+#### Pods Components
+  `/pods-components?package`
 
-  * `package` (CREATABLE | ACCEPT_JSON)
-   * Import a Pods Package
-   * Takes a Pods Package data as the body of request.
-   * Requires that the Pods Migrate Package component be active on remote site.
-   * Success returns true. Failure false.
-   * Reset a Pod's contents
+* `package` (CREATABLE | ACCEPT_JSON)
+ * Import a Pods Package
+ * Requires that the Pods Migrate Package component be active on remote site.
+ * Success returns true. Failure false.
+
 
 
 
@@ -170,7 +170,7 @@ By default POST requests, sent to a Pods class endpoint will default to save_ite
         )
     );
     
-    //make sure response isn't an eror
+    //make sure response isn't an error
     if ( ! is_wp_error( $response )  ) {
     
         //show the updated post item
@@ -185,7 +185,7 @@ This endpoint is designed to address an issue that can occur when using the `add
 
 When these types of fields are updated/ created via the API, at the time of field creation/edit the sister IDs--the ID of the field in related Pod--can not be set if the related field does not yet exist and therefore does not have an ID. In addition, if the configuration is being copied from a remote site, the field IDs will be diffrent.
 
-This endpoint is designed to be used to correct these errors <em>after</em> all Pods and Pods Fields are created. The data passed to it should be a multi-demenisonal array, with each field represented like this:
+This endpoint is designed to be used to correct these errors <em>after</em> all Pods and Pods Fields are created. The data passed to it should be a multi-dimensional array, with each field represented like this:
 
     ```
     [field_name] =>
