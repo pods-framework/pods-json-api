@@ -16,6 +16,7 @@ class Pods_JSON_API_Pods_Components {
 	public function register_routes( $routes ) {
 
 		$routes[ '/pods-components' ] = array(
+			array( array( $this, 'get_components' ), WP_JSON_Server::READABLE ),
 			array( array( $this, 'package' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
 			array( array( $this, 'activate_components' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON ),
 
@@ -207,6 +208,41 @@ class Pods_JSON_API_Pods_Components {
 		else {
 			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error activating or deactivating components in bulk.', 'pods-json-api' ) );
 		}
+	}
+
+	/**
+	 * Returns an array of all components. Key is component ID, value is true if active, false if inactive.
+	 *
+	 * @since 0.2.0
+	 *
+	 * @return mixed
+	 */
+	function get_components() {
+		if ( !$this->check_access( __FUNCTION__ ) ) {
+			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
+		}
+
+		$components = new PodsComponents();
+		$components = $components->get_components();
+		$components = array_keys( wp_list_pluck( $components, 'ID'  ));
+		$active_components = get_option( 'pods_component_settings' );
+		$active_components =  json_decode( $active_components );
+		$active_components = pods_v( 'components', $active_components );
+		if ( $active_components ) {
+			$active_components = array_keys( (array) $active_components );
+		}
+
+		foreach( $components as $component ) {
+			if ( in_array( $component, $active_components ) ) {
+				$response[ $component ] = true;
+			}
+			else{
+				$response[ $component ] = false;
+			}
+		}
+
+		return $response;
+
 	}
 
 	/**

@@ -223,12 +223,29 @@ You can pass the Pods Package data--which is already in JSON format--to the body
 
 ### Activating & Deactivating Components
 *Added in version 0.2
-You may bulk activate and/ or deactivate components with a PUT request to the pods-packages endpoint. Your
+You may bulk activate and/ or deactivate components with a PUT request to the pods-packages endpoint. You may also activate and/ or deactivate components individually using the `pods-components/activate/<component>` endpoint, using a POST request to activate, or a DELETE request to deactivate.
+
+The activate/deactivate methods return true, with a status of 201 if the option that stores active components was updated and false, with a status of 500, if it was not. You can get a list of all components and their activation status by making a GET request to the pods-component endpoint.
+
+Get a list of all components and whether they are active or not:
+```
+        $url = json_url( 'pods-components' );
+
+        //This example uses the basic authentication plugin for authentication
+        $headers    = array (
+            'Authorization' => 'Basic ' . base64_encode( 'admin' . ':' . 'password' ),
+        );
+
+        $response = wp_remote_post( $url, array (
+                            'method'    => 'GET',
+                            'headers'   => $headers,
+            )
+        );
+```
 
 Activate and/ or deactivate multiple components at once:
 ```
     $data = array(  'deactivate' => array( 'templates', 'table-storage' ), 'activate' => array( 'pages' ) );
-
 
 	$url = json_url( 'pods-components?activate_components' );
 
