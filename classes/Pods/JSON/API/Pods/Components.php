@@ -206,7 +206,7 @@ class Pods_JSON_API_Pods_Components {
 			return $response;
 		}
 		else {
-			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error activating or deactivating components in bulk.', 'pods-json-api' ) );
+			return null;
 		}
 	}
 
