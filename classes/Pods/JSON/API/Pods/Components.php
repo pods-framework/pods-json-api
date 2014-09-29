@@ -68,7 +68,7 @@ class Pods_JSON_API_Pods_Components {
 		elseif ( 0 < $id ) {
 			$response = json_ensure_response( $id );
 			$response->set_status( 201 );
-			$response->header( 'Location', json_url( '/pods-api/package' ) );
+			$response->header( 'Location', json_url( '/pods-components?package' ) );
 
 			return $response;
 		}
@@ -110,7 +110,7 @@ class Pods_JSON_API_Pods_Components {
 		elseif ( 0 < $id ) {
 			$response = json_ensure_response( $id );
 			$response->set_status( 201 );
-			$response->header( 'Location', json_url( '/pods-api/package/activate/' . $component ) );
+			$response->header( 'Location', json_url( '/pods-components/activate/' . $component ) );
 
 			return $response;
 		}
@@ -148,7 +148,7 @@ class Pods_JSON_API_Pods_Components {
 		elseif ( 0 < $id ) {
 			$response = json_ensure_response( $id );
 			$response->set_status( 201 );
-			$response->header( 'Location', json_url( '/pods-api/package/activate/' . $component ) );
+			$response->header( 'Location', json_url( '/pods-components/activate/' . $component ) );
 
 			return $response;
 		}
@@ -201,7 +201,7 @@ class Pods_JSON_API_Pods_Components {
 		elseif ( 0 < $id ) {
 			$response = json_ensure_response( $id );
 			$response->set_status( 201 );
-			$response->header( 'Location', json_url( '/pods-api/package?activate_components' ) );
+			$response->header( 'Location', json_url( '/pods-components?activate_components' ) );
 
 			return $response;
 		}
@@ -218,7 +218,7 @@ class Pods_JSON_API_Pods_Components {
 	 * @return mixed
 	 */
 	function get_components() {
-		if ( !$this->check_access( __FUNCTION__ ) ) {
+		if ( ! $this->check_access( __FUNCTION__ ) ) {
 			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
 		}
 
@@ -232,16 +232,42 @@ class Pods_JSON_API_Pods_Components {
 			$active_components = array_keys( (array) $active_components );
 		}
 
-		foreach( $components as $component ) {
-			if ( in_array( $component, $active_components ) ) {
-				$response[ $component ] = true;
+		try {
+			if ( ! is_null( $active_components ) ) {
+				foreach ( $components as $component ) {
+
+					if ( in_array( $component, $active_components ) ) {
+						$response[ $component ] = true;
+					} else {
+						$response[ $component ] = false;
+					}
+				}
+			} else {
+				$response = 0;
 			}
-			else{
-				$response[ $component ] = false;
-			}
+
+		}
+		catch ( Exception $e ) {
+			$response = new WP_Error( $e->getCode(), $e->getMessage() );
 		}
 
-		return $response;
+		if ( $response instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
+			return $response;
+		}
+		elseif ( 0 < $response ) {
+			$response = json_ensure_response( $response );
+			$response->set_status( 201 );
+			$response->header( 'Location', json_url( '/pods-components?get_components' ) );
+
+			return $response;
+		}
+		else {
+
+			return null;
+
+		}
+
+
 
 	}
 
