@@ -94,6 +94,7 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 
 #### Pods Components
 `/pods-components?package`
+
  * `package` (CREATABLE | ACCEPT_JSON)
   * Import a Pods Package
   * Requires that the Pods Migrate Package component be active on remote site.
@@ -101,6 +102,7 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 
 
 `/pods-components?activate_components`
+
 * `activate_components` (EDITABLE | ACCEPT_JSON)
  * Bulk activates and/ or deactivates components.
  * Takes a multi-dimensional array containing a 'activate' and or 'deactivate' key, each of which should contain an array of Pods Component names.
@@ -108,16 +110,18 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  * Success returns true. Failure false.
 
 `/pods-components/activate/<component>`
+
 *`activate`  (EDITABLE)
  * Activate a single component
  * Use POST request.
  * Success returns true. Failure false.
 
 `/pods-components/activate/<component>`
- *`deactivate`  (DELETABLE)
-  * Deactivate a single component
-  * Use DELETE request.
-  * Success returns true. Failure false.
+
+*`deactivate`  (DELETABLE)
+ * Deactivate a single component
+ * Use DELETE request.
+ * Success returns true. Failure false.
 
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
