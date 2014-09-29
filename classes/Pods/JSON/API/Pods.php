@@ -82,6 +82,27 @@ class Pods_JSON_API_Pods {
 			$items = $pod_object->export_data();
 
 			$items = apply_filters( 'pods_json_api_pods_get_items', $items, $pod, $params, $data, $pod_object );
+
+			/**
+			 * Optionally do not return user email and password for user pod
+			 *
+			 * If false, user's email and their <em>hashed</em> password will not be returned.
+			 *
+			 * @since 0.2.1
+			 *
+			 * @param bool True to not return email/password
+			 */
+			if ( $pod === 'user' && apply_filters( 'pods_json_api_disable_sensitive_user_data', true ) ) {
+				if ( isset( $items[ 'user_email' ] ) ) {
+					unset( $items[ 'user_email' ] );
+				}
+
+				if ( isset( $items[ 'user_pass' ] ) ) {
+					unset( $items[ 'user_pass' ] );
+				}
+
+			}
+
 		}
 		catch ( Exception $e ) {
 			$items = new WP_Error( $e->getCode(), $e->getMessage() );
@@ -156,6 +177,20 @@ class Pods_JSON_API_Pods {
 			$data = $pod_object->export();
 
 			$data = apply_filters( 'pods_json_api_pods_' . __FUNCTION__, $data, $pod, $item, $data, $pod_object );
+
+			/**
+			 * pods_json_api_disable_sensitive_user_data filter is documented in the get_items method of this class.
+			 */
+			if ( $pod === 'user' && apply_filters( 'pods_json_api_disable_sensitive_user_data', true ) ) {
+				if ( isset( $items[ 'user_email' ] ) ) {
+					unset( $items[ 'user_email' ] );
+				}
+
+				if ( isset( $items[ 'user_pass' ] ) ) {
+					unset( $items[ 'user_pass' ] );
+				}
+
+			}
 		}
 		catch ( Exception $e ) {
 			$data = new WP_Error( $e->getCode(), $e->getMessage() );
