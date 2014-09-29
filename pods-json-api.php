@@ -3,7 +3,7 @@
 Plugin Name: Pods JSON API
 Plugin URI: http://pods.io/
 Description: JSON REST API for Pods
-Version: 0.2
+Version: 0.2.1
 Author: Pods Framework Team
 Author URI: http://pods.io/about/
 Text Domain: pods-json-api
@@ -31,7 +31,7 @@ if ( defined( 'PODS_JSON_API_VERSION' ) ) {
 	return;
 }
 
-define( 'PODS_JSON_API_VERSION', '0.2' );
+define( 'PODS_JSON_API_VERSION', '0.2.1' );
 define( 'PODS_JSON_API_DIR', plugin_dir_path( __FILE__ ) );
 
 // Include main class
