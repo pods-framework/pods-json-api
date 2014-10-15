@@ -5,6 +5,8 @@ This is a plugin that implements the `pods` and `pods-api` routes for [WP-API](h
 
 It provides access to various methods in the Pods and Pods API classes in the [Pods Framework](http://pods.io).
 
+[Slides from PodsCamp DFW 2014 presentation: "Introduction To The Pods JSON API"](http://www.slideshare.net/podsframework/introduction-to-the-pods-json-api)
+
 ### Requirements
 
 * [WP-API](https://github.com/WP-API/WP-API) 1.0 or newer
@@ -122,6 +124,11 @@ It provides access to various methods in the Pods and Pods API classes in the [P
  * Deactivate a single component
  * Use DELETE request.
  * Success returns true. Failure false.
+
+### Using AJAX
+* Example code is being migrated to our code-library repository. 
+
+See https://github.com/pods-framework/pods-code-library/tree/master/example/misc/json-api/examplesfor examples using AJAX.
 
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
