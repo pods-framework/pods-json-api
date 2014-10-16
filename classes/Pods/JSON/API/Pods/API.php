@@ -409,7 +409,8 @@ class Pods_JSON_API_Pods_API {
 					$to_pod = pods_v( 'pick_val', $field );
 
 					if ( in_array( $to_pod, $pod_names ) ) {
-						$relationship = pods_v( pods_v( 'name', $field ), $data );
+
+						$relationship = pods_v( $pod . '_' . pods_v( 'name', $field ), $data );
 						$to_pod = $relationship[ 'to' ][ 'pod_name' ];
 						$to_field = $relationship[ 'to' ][ 'field_name' ];
 

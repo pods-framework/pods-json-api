@@ -215,7 +215,7 @@ When these types of fields are updated/ created via the API, at the time of fiel
 This endpoint is designed to be used to correct these errors <em>after</em> all Pods and Pods Fields are created. The data passed to it should be a multi-dimensional array, with each field represented like this:
 
     ```
-    [field_name] =>
+    [pod_name_field_name] =>
         [from] =>
             [field_name] => 'field_name',
             [pod_name] => 'pod_name',
