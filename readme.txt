@@ -2,8 +2,8 @@
 Contributors: sc0ttkclark, modemlooper, shelob9
 Tags: pods, json, api
 Tested up to: 4.0
-Stable tag: 0.2.2
-Version: 0.2.2
+Stable tag: 0.2.3
+Version: 0.2.3
 License: GPLv2
 
 == Description ==
