@@ -8,7 +8,7 @@ Once a user connecting via the REST API is authenticated by one of the systems p
 There are two main strategies for implementing these filters:
 
 1) Based on current user's capabilities:
-    Check a current logged in user's capabilities (ie `if ( current_user_can( 'edit_posts' ) )`  and grant access conditionally.
+    Check a current logged in user's capabilities, IE `if ( current_user_can( 'edit_posts' ) )`,  and grant access conditionally.
     
 2) Globally.
     Grant or deny access to all users for specific endpoints/routes.
@@ -32,7 +32,7 @@ Because these filters have the Pod name as their second argument, you can also g
 
 ```php
 add_filter( 'pods_json_api_access_pods_get_items', function( $access, $method, $pod ) {
-    if ( 'jedi' == 'pod ) {
+    if ( 'jedi' == $pod ) {
         $access = false;
     }
     else {
@@ -44,7 +44,7 @@ add_filter( 'pods_json_api_access_pods_get_items', function( $access, $method, $
 ```
 
 ### Using Current User Permissions
-As noted in the introduction, once authenticated, the current user's capabilities cna be checked, just like in any other context. For this reason, <em>authentication alone does not categorically grant access to the routes added by this plugin</em>. Also, when working with standard WordPress content types, such as post types and taxonomies, the default WordPress permissions can be used.
+As noted in the introduction, once authenticated, the current user's capabilities can be checked, just like in any other context. For this reason, <em>authentication alone does not categorically grant access to the routes added by this plugin</em>. Also, when working with standard WordPress content types, such as post types and taxonomies, the default WordPress permissions can be used.
 
 For example, if you have a custom post type Pod, you may wish to grant global access to the Pods route, for all users who have the capability "edit_posts", like this:
 

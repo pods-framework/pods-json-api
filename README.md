@@ -15,6 +15,7 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 * [Pods Framework](http://Pods.io)
 
 ### Resources
+* [Authentication Filters For The Pods JSON API](https://github.com/pods-framework/pods-json-api/blob/master/authentication-filters.MD)
 * [WP-API Getting Started Guide](https://github.com/WP-API/WP-API/blob/master/docs/guides/getting-started.md)
 * [WP-API Docs](https://github.com/WP-API/WP-API/blob/master/docs/)
 * [WP-API Console](https://github.com/WP-API/api-console)
