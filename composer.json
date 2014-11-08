@@ -26,7 +26,6 @@
         "source": "https://github.com/pods-framework/pods-json-api"
     },
     "require": {
-        "composer/installers": "~1.0",
-        "wpackagist-plugin/pods": ">=2.4"
+        "composer/installers": "~1.0"
     }
 }
