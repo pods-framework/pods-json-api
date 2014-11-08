@@ -140,24 +140,24 @@ For example, to do a `Pods::find()` query on the Pod 'soup' that was the equival
 
 ```php
     $params = array(
-       'where' => 't.is_spicy = 1',
-       'limit' => '7',
+       'data[where]' => 't.is_spicy = 1',
+       'data[limit]' => '7',
     );
 $pods = pods( 'soup', $params );
 ```
 
-You would use the url encoded equivalent of `soup/find?where=t.is_spicy%3D1&limit=7` by passing the values through `urlencode()`.
+You would use the url encoded equivalent of `soup/?data[where]=t.is_spicy%3D1&data[limit]=7` by passing the values through `urlencode()`.
 
 You can convert a PHP array, designed to be passed to `Pods::find()` or another method, to an encoded string, by first passing it through a foreach loop and encoding the values. For example, to create a long query, without manually encoding URLs, you could do:
 
 ```php
     $params = array(
-        'where' => 'serves.meta_value = "four or more"',
-        'limit' => '7',
-        'orderby' => 't.post_title ASC'
+        'data[where]' => 'serves.meta_value = "four or more"',
+        'data[limit]' => '7',
+        'data[orderby]' => 't.post_title ASC'
     );
 
-    $url = json_url( 'pods/soup?find=' );
+    $url = json_url( 'pods/soup?' );
     
     $url = http_build_query( $params );
 ```
@@ -169,9 +169,9 @@ All that is actually needed to create a find request is:
 
 ```php
     $params = array(
-        'where' => 'serves.meta_value = "four or more"',
-        'limit' => '7',
-        'orderby' => 't.post_title ASC'
+        'data[where]' => 'serves.meta_value = "four or more"',
+        'data[limit]' => '7',
+        'data[orderby]' => 't.post_title ASC'
     );
 
     $url = json_url( 'pods/soup' );
