@@ -175,6 +175,7 @@ class Pods_JSON_API_Pods {
 			$pod_object = pods( $pod, $item );
 
 			$data = $pod_object->export();
+			$data['id'] = $pod_object->id(); // until export() delivers the id
 
 			$data = apply_filters( 'pods_json_api_pods_' . __FUNCTION__, $data, $pod, $item, $data, $pod_object );
 
