@@ -52,10 +52,10 @@ class Pods_JSON_API_Pods {
 		}
 
 		try {
-			$params = pods_sanitize( $data );
+			$params = $data;
 
 			// Force limited $params if not admin
-			if ( !$this->check_access( false ) ) {
+			if ( ! $this->check_access( false ) ) {
 				$safe_params = array();
 
 				if ( isset( $params[ 'limit' ] ) ) {
@@ -74,6 +74,10 @@ class Pods_JSON_API_Pods {
 			}
 
 			$pod_object = pods( $pod );
+
+			foreach( $params as $key => $param ) {
+				$params[ $key ] = pods_unslash( $param );
+			}
 
 			$params = apply_filters( 'pods_json_api_pods_get_items_params', $params, $pod, $data, $pod_object );
 
