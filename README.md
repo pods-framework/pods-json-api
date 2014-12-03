@@ -129,7 +129,7 @@ It provides access to various methods in the Pods and Pods API classes in the [P
 ### Using AJAX
 * Example code is being migrated to our code-library repository. 
 
-See https://github.com/pods-framework/pods-code-library/tree/master/example/misc/json-api/examplesfor examples using AJAX.
+See https://github.com/pods-framework/pods-code-library/tree/master/example/misc/json-api/examples for examples using AJAX.
 
 ### Passing Parameters To Methods
 You can pass the same parameters to each method as you usually would in the methods `$parameters` array, when using the method via PHP, by appending variables to the URL.
