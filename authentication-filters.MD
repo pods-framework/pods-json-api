@@ -50,7 +50,7 @@ For example, if you have a custom post type Pod, you may wish to grant global ac
 
 ```php
 add_filter( 'pods_json_api_access_pods', function( $access ) {
-    if ( current_user_can( 'edit_posts' ) {
+    if ( current_user_can( 'edit_posts' )) {
         $access = true;
     }
   
