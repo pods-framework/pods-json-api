@@ -1,0 +1,31 @@
+{
+    "name": "pods-framework/pods-json-api",
+    "description": "JSON REST API for Pods. This plugin creates JSON API endpoints for https://github.com/WP-API/WP-API",
+    "type": "wordpress-plugin",
+    "keywords": ["pods", "wordpress", "wp-api", "api"],
+    "homepage": "https://github.com/pods-framework/pods-json-api",
+    "require": {
+        "php": ">=5.3"
+    },
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Scott Kingsley Clark",
+            "email": "lol@scottkclark.com",
+            "homepage": "http://scottkclark.com",
+            "role" : "Lead Developer"
+        },
+        {
+            "name": "Pods Framework Team",
+            "email": "contact@pods.io",
+            "homepage": "http://pods.io/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/pods-framework/pods-json-api/issues",
+        "source": "https://github.com/pods-framework/pods-json-api"
+    },
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

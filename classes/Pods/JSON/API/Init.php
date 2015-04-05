@@ -13,7 +13,8 @@ class Pods_JSON_API_Init {
 	 */
 	private static $endpoints = array(
 		'Pods_JSON_API_Pods',
-		'Pods_JSON_API_Pods_API'
+		'Pods_JSON_API_Pods_API',
+		'Pods_JSON_API_Pods_Components'
 	);
 
 	/**

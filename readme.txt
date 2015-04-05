@@ -1,9 +1,9 @@
 === Pods JSON API ===
-Contributors: sc0ttkclark, modemlooper
+Contributors: sc0ttkclark, modemlooper, shelob9
 Tags: pods, json, api
-Tested up to: 3.9.1
-Stable tag: 0.1
-Version: 0.1
+Tested up to: 4.0
+Stable tag: 0.2.3
+Version: 0.2.3
 License: GPLv2
 
 == Description ==
@@ -27,3 +27,6 @@ OR you can just install it with WordPress by going to Plugins >> Add New >> and 
 == Changelog ==
 = 0.1 - May 27th, 2014 =
 * Initial release
+= 0.2 - September 20, 2014 =
+* Add 'update_rel' endpoint
+* Add 'package' endpoint'

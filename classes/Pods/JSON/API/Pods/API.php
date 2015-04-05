@@ -17,13 +17,13 @@ class Pods_JSON_API_Pods_API {
 
 		$routes[ '/pods-api' ] = array(
 			array( array( $this, 'get_pods' ), WP_JSON_Server::READABLE ),
-			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
+			array( array( $this, 'add_pod' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON ),
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)' ] = array(
 			array( array( $this, 'get_pod' ), WP_JSON_Server::READABLE ),
-			array( array( $this, 'save_pod' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON ),
-			array( array( $this, 'delete_pod' ), WP_JSON_Server::DELETABLE )
+			array( array( $this, 'delete_pod' ), WP_JSON_Server::DELETABLE ),
+
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)/duplicate' ] = array(
@@ -31,8 +31,14 @@ class Pods_JSON_API_Pods_API {
 		);
 
 		$routes[ '/pods-api/(?P<pod>[\w\-\_]+)/reset' ] = array(
-			array( array( $this, 'reset_pod' ), WP_JSON_Server::DELETABLE )
+			array( array( $this, 'reset' ), WP_JSON_Server::EDITABLE | WP_JSON_Server::ACCEPT_JSON )
 		);
+
+		$routes[ '/pods-api/update_rel' ] = array(
+			array( array( $this, 'update_rel' ), WP_JSON_Server::CREATABLE | WP_JSON_Server::ACCEPT_JSON )
+		);
+
+
 
 		return $routes;
 
@@ -354,6 +360,158 @@ class Pods_JSON_API_Pods_API {
 	}
 
 	/**
+	 * Update bi-directional relationships to correct sister IDs.
+	 *
+	 * @see Readme for structure of data.
+	 *
+	 * @param int|string $pod Pod name or Pod ID.
+	 * @param array $data Array of relationships for site
+	 *
+	 *
+	 * @access public
+	 *
+	 * @return WP_Error|WP_JSON_ResponseInterface
+	 */
+	function update_rel( $data = array() ) {
+		if ( ! $this->check_access( __FUNCTION__ ) ) {
+			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
+		}
+		try {
+			$id = $other_pods = $fields_updated = false;
+			$api = pods_api();
+			$api->display_errors = false;
+
+			$pod_names = $api->load_pods( array( 'names' => true ) );
+			if ( ! empty( $pod_names ) ) {
+				$pod_names = array_flip( (array) $pod_names );
+			}
+
+			foreach ( $data as $relates ) {
+				$pod = $relates[ 'from' ][ 'pod_name' ];
+				$this_pod = $api->load_pod( array( 'name' => $pod ) );
+				$pod_id = $id = pods_v( 'id', $this_pod );
+				$fields = pods_v( 'fields', $this_pod );
+				unset( $this_pod );
+
+				$other_pods = $fields_updated = array ();
+				foreach( $fields as $field ) {
+					if ( 'pick' == pods_v( 'type', $field ) ) {
+						$field_id = pods_v( 'id', $field );
+						$field_name = pods_v( 'name', $field );
+						$to_pod = pods_v( 'pick_val', $field );
+
+						if ( in_array( $to_pod, $pod_names ) ) {
+
+							$relationship = pods_v( $pod . '_' . pods_v( 'name', $field ), $data );
+							$to_pod = $relationship[ 'to' ][ 'pod_name' ];
+							$to_field = $relationship[ 'to' ][ 'field_name' ];
+
+							if ( is_null( $related_pod = pods_v( $to_pod, $other_pods ) ) ) {
+								$params = array( 'name' => $to_pod );
+								$related_pod =  $api->load_pod( $params );
+								$related_pod = pods_v( 'fields', $related_pod );
+								if ( is_object( $related_pod ) && ! empty ( $related_pod ) ) {
+									$other_pods[ $to_pod ] = $related_pod;
+								}
+
+								$field = pods_v( $to_field, $related_pod );
+								$sister_id = pods_v( 'id', $field  );
+
+								if ( ! is_null( $pod_id ) && ! is_null( $field_id ) && ! is_null( $sister_id ) && ! is_null( $field_name ) ) {
+									$params = array (
+										'pod_id'    => $pod_id,
+										'id'        => $field_id,
+										'sister_id' => $sister_id,
+										'name'      => $field_name,
+									);
+								}
+
+								$fields_updated[] = $api->save_field( $params );
+
+							}
+
+						}
+
+					}
+
+				}
+			}
+		}
+		catch ( Exception $e ) {
+			$id = new WP_Error( $e->getCode(), $e->getMessage() );
+		}
+
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
+			return $id;
+		}
+		elseif( isset( $fields_updated ) && is_array( $fields_updated ) ) {
+			return $fields_updated;
+			$response = json_ensure_response( $fields_updated );
+			$response->set_status( 201 );
+			$response->header( 'Location', json_url( '/pods-api/' . $pod[ 'name' ] . '/' . __FUNCTION__ ) );
+
+			return $response;
+		}
+		elseif ( 0 < $id ) {
+			$response = json_ensure_response( $pod = $this->get_pod( $id ) );
+			$response->set_status( 201 );
+			$response->header( 'Location', json_url( '/pods-api/' . $pod[ 'name' ] . '/' . __FUNCTION__ ) );
+
+			return $response;
+		}
+		else {
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error updating relationship', 'pods-json-api' ) );
+		}
+
+	}
+
+	/**
+	 * Import a Pods Migrate package
+	 *
+	 * Pods Package component must be active on site receiving data or an error will be returned.
+	 *
+	 * @param array $data Pods Migrate Package.
+	 *
+	 * @return boolean|WP_Error
+	 *
+	 * @access public
+	 */
+	public function package( $data ) {
+		return new WP_Error( 'pods_json_api_error_' . __FUNCTION__ . 'no_package',  __( 'This endpoint requires activating the Pods Packages component on the site receiving the package.', 'pods-json-api' ) );
+		if ( ! $this->check_access( __FUNCTION__ ) ) {
+			return new WP_Error( 'pods_json_api_restricted_error_' . __FUNCTION__, __( 'Sorry, you do not have access to this endpoint.', 'pods-json-api' ) );
+		}
+
+		if ( ! class_exists(  'Pods_Migrate_Packages' ) ) {
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__ . 'no_package',  __( 'This endpoint requires activating the Pods Packages component on the site receiving the package.', 'pods-json-api' ) );
+		}
+
+		try {
+
+			$id = Pods_Migrate_Packages::import( $data );
+
+		}
+		catch ( Exception $e ) {
+			$id = new WP_Error( $e->getCode(), $e->getMessage() );
+		}
+
+		if ( $id instanceof WP_Error || !function_exists( 'json_ensure_response' ) ) {
+			return $id;
+		}
+		elseif ( 0 < $id ) {
+			$response = json_ensure_response( $id );
+			$response->set_status( 201 );
+			$response->header( 'Location', json_url( '/pods-api/package' ) );
+
+			return $response;
+		}
+		else {
+			return new WP_Error( 'pods_json_api_error_' . __FUNCTION__,  __( 'Error importing package.', 'pods-json-api' ) );
+		}
+
+	}
+
+	/**
 	 * Check if user has access to endpoint
 	 *
 	 * @param string $method Method name
@@ -379,11 +537,11 @@ class Pods_JSON_API_Pods_API {
 	 * @param array $pod Pod array
 	 * @param boolean $fields Include fields in pod
 	 *
-	 * @return array
+	 * @return object
 	 *
 	 * @access protected
 	 */
-	protected function cleanup_pod( $pod, $fields = true ) {
+	function cleanup_pod( $pod, $fields = true ) {
 
 		$options_ignore = array(
 			'pod_id',
@@ -464,12 +622,13 @@ class Pods_JSON_API_Pods_API {
 		}
 
 		if ( $fields ) {
-			$field_types = Pods_Form::field_types();
+			$pods_form = pods_form();
+			$field_types = $pods_form::field_types();
 
 			$field_type_options = array();
 
 			foreach ( $field_types as $type => $field_type_data ) {
-				$field_type_options[ $type ] = Pods_Form::ui_options( $type );
+				$field_type_options[ $type ] = $pods_form::ui_options( $type );
 			}
 
 			foreach ( $pod[ 'fields' ] as &$field ) {
@@ -523,7 +682,7 @@ class Pods_JSON_API_Pods_API {
 			unset( $pod[ 'fields' ] );
 		}
 
-		return $pod;
+		return (object) $pod;
 
 	}
 
