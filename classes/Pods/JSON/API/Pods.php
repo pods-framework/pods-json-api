@@ -52,36 +52,59 @@ class Pods_JSON_API_Pods {
 		}
 
 		try {
-			$params = pods_sanitize( $data );
+			$fields = null;
+			$depth = 2;
 
-			// Force limited $params if not admin
-			if ( !$this->check_access( false ) ) {
-				$safe_params = array();
+			$find_params = pods_sanitize( $data );
 
-				if ( isset( $params[ 'limit' ] ) ) {
-					$safe_params[ 'limit' ] = (int) $params[ 'limit' ];
+			if ( ! empty( $find_params['export_fields'] ) ) {
+				$fields = $find_params['export_fields'];
+
+				if ( ! is_array( $fields ) ) {
+					$fields = explode( ',', $fields );
 				}
 
-				if ( isset( $params[ 'page' ] ) ) {
-					$safe_params[ 'page' ] = (int) $params[ 'page' ];
-				}
-
-				if ( isset( $params[ 'offset' ] ) ) {
-					$safe_params[ 'offset' ] = (int) $params[ 'offset' ];
-				}
-
-				$params = $safe_params;
+				unset( $find_params['export_fields'] );
 			}
 
-			$pod_object = pods( $pod );
+			if ( ! empty( $find_params['export_depth'] ) ) {
+				$depth = (int) $find_params['export_depth'];
 
-			$params = apply_filters( 'pods_json_api_pods_get_items_params', $params, $pod, $data, $pod_object );
+				unset( $find_params['export_depth'] );
+			}
 
-			$pod_object->find( $params );
+			// Force limited $find_params if not admin
+			if ( ! $this->check_access( false ) ) {
+				$safe_params = array();
 
-			$items = $pod_object->export_data();
+				if ( isset( $find_params[ 'limit' ] ) ) {
+					$safe_params[ 'limit' ] = (int) $find_params[ 'limit' ];
+				}
 
-			$items = apply_filters( 'pods_json_api_pods_get_items', $items, $pod, $params, $data, $pod_object );
+				if ( isset( $find_params[ 'page' ] ) ) {
+					$safe_params[ 'page' ] = (int) $find_params[ 'page' ];
+				}
+
+				if ( isset( $find_params[ 'offset' ] ) ) {
+					$safe_params[ 'offset' ] = (int) $find_params[ 'offset' ];
+				}
+
+				$find_params = $safe_params;
+			}
+
+			$find_params = apply_filters( 'pods_json_api_pods_get_items_params', $find_params, $pod, $data );
+
+			$params = array(
+				'fields' => $fields,
+				'depth'  => $depth,
+				'params' => $find_params
+			);
+
+			$params = apply_filters( 'pods_json_api_pods_get_items_full_params', $params, $pod, $data );
+
+			$items = pods_api()->export( $pod, $params );
+
+			$items = apply_filters( 'pods_json_api_pods_get_items', $items, $pod, $params, $data );
 		}
 		catch ( Exception $e ) {
 			$items = new WP_Error( $e->getCode(), $e->getMessage() );
