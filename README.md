@@ -1,5 +1,6 @@
 Pods JSON API
 ===========
+<strong>DEPRECATION NOTICE</strong> In order to move forward without risking breaking backwords-compatibility, we have begun work on [a new plugin to replace this one](https://github.com/pods-framework/pods-rest-api). Deprecation -- an end to support and devlopment on Pods JSON API -- like winter, is coming.
 
 This is a plugin that implements the `pods` and `pods-api` routes for [WP-API](https://github.com/WP-API/WP-API).
 
