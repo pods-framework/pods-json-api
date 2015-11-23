@@ -1,8 +1,8 @@
 Pods JSON API
 ===========
-<strong>DEPRECATION NOTICE</strong> In order to move forward without risking breaking backwords-compatibility, we have begun work on [a new plugin to replace this one](https://github.com/pods-framework/pods-rest-api). Deprecation -- an end to support and devlopment on Pods JSON API -- like winter, is coming.
+<strong>DEPRECATION NOTICE</strong> This plugin is deprecated. It <em>should</em> continue to work with version 1 of the REST API, but is no longer supported. Pods 2.6 and later has support for the WordPress REST API version 2 included.
 
-This is a plugin that implements the `pods` and `pods-api` routes for [WP-API](https://github.com/WP-API/WP-API).
+This is a plugin that implements the `pods` and `pods-api` routes for [WP-API](https://github.com/WP-API/WP-API) Version 1.
 
 It provides access to various methods in the Pods and Pods API classes in the [Pods Framework](http://pods.io).
 
